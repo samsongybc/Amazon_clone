@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import LayOut from "../../Components/LayOut/LayOut";
 import { DataContext } from "../../Components/DataProvider/DataProvider";
 import CurrencyFormat from "../../Components/CurrencyFormat/CurrencyFormat";
+import { Type } from "../../Utility/action.type";
 import classes from "./Cart.module.css";
 
 const Cart = () => {
@@ -9,7 +10,21 @@ const Cart = () => {
 
   const removeFromCart = (id) => {
     dispatch({
-      type: "REMOVE_FROM_BASKET",
+      type: Type.REMOVE_FROM_BASKET,
+      id: id,
+    });
+  };
+
+  const incrementItem = (id) => {
+    dispatch({
+      type: Type.INCREMENT_ITEM,
+      id: id,
+    });
+  };
+
+  const decrementItem = (id) => {
+    dispatch({
+      type: Type.DECREMENT_ITEM,
       id: id,
     });
   };
@@ -33,7 +48,36 @@ const Cart = () => {
                   <div className={classes.price}>
                     <CurrencyFormat amount={item.price} />
                   </div>
-                  <button 
+
+                  <div className={classes.quantity_controls}>
+                    <button
+                      onClick={() => decrementItem(item.id)}
+                      className={classes.quantity_button}
+                      disabled={item.quantity <= 1}
+                    >
+                      -
+                    </button>
+                    <span className={classes.quantity_display}>
+                      Qty: {item.quantity || 1}
+                    </span>
+                    <button
+                      onClick={() => incrementItem(item.id)}
+                      className={classes.quantity_button}
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  <div className={classes.item_total}>
+                    <strong>
+                      Item Total:{" "}
+                      <CurrencyFormat
+                        amount={item.price * (item.quantity || 1)}
+                      />
+                    </strong>
+                  </div>
+
+                  <button
                     onClick={() => removeFromCart(item.id)}
                     className={classes.remove_button}
                   >
@@ -44,13 +88,23 @@ const Cart = () => {
             ))
           )}
         </div>
-        
+
         {basket.length > 0 && (
           <div className={classes.cart_right}>
             <div className={classes.subtotal}>
-              <h3>Subtotal ({basket.length} items):</h3>
-              <CurrencyFormat 
-                amount={basket.reduce((total, item) => total + item.price, 0)} 
+              <h3>
+                Subtotal (
+                {basket.reduce(
+                  (total, item) => total + (item.quantity || 1),
+                  0
+                )}{" "}
+                items):
+              </h3>
+              <CurrencyFormat
+                amount={basket.reduce(
+                  (total, item) => total + item.price * (item.quantity || 1),
+                  0
+                )}
               />
             </div>
             <button className={classes.checkout_button}>

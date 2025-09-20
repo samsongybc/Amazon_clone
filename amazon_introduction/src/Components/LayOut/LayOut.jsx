@@ -6,6 +6,7 @@ const LayOut = ({children}) => {
     <div>
       <Header/>
       {children}
+      
 
     </div>
   )

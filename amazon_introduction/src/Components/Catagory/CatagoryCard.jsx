@@ -5,7 +5,7 @@ const CatagoryCard = ({ data }) => {
   // console.log(data);
   return (
     <div className={classes.catagory}>
-      <Link to={`/category/${encodeURIComponent(data.category)}`}>
+      <Link to={`/category/${encodeURIComponent(data.name)}`}>
         <span>
           <h2>{data.title}</h2>
         </span>

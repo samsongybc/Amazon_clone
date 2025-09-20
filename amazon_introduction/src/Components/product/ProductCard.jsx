@@ -7,7 +7,7 @@ import { DataContext } from "../DataProvider/DataProvider";
 import { Type } from "../../Utility/action.type";
 
 const ProductCard = ({ product, flex, renderDesc }) => {
-  const { image, title, id, rating, price, description } = product;
+  const { image, title, id, rating, price, description, category } = product;
   console.log(product);
   const [state, dispatch] = useContext(DataContext);
   const addToCart = () => {
@@ -28,6 +28,13 @@ const ProductCard = ({ product, flex, renderDesc }) => {
       </Link>
       <div>
         <h3>{title}</h3>
+        {category && (
+          <div className={classes.category_link}>
+            <Link to={`/category/${encodeURIComponent(category)}`}>
+              <small>Category: {category}</small>
+            </Link>
+          </div>
+        )}
         {renderDesc && <div>{description}</div>}
         <div className={classes.rating}>
           {/* rating */}

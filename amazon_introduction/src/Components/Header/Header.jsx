@@ -8,8 +8,7 @@ import Lower_header from "./Lower_header";
 import { DataContext } from "../DataProvider/DataProvider";
 
 const Header = () => {
-
-  const [{basket}, dispatch] =useContext(DataContext)
+  const [{ basket }, dispatch] = useContext(DataContext);
   return (
     <section className={classes.fixed}>
       <section className={classes.header_container}>
@@ -55,20 +54,22 @@ const Header = () => {
             </select>
           </Link>
           {/* three components */}
-          <Link to ="">
+          <Link to="">
             <p>Sign In</p>
             <span>Account & Lists</span>
           </Link>
           {/* orders */}
 
-          <Link to ="/orders">
+          <Link to="/orders">
             <p>returns</p>
             <span>& Orders</span>
           </Link>
           {/* cart */}
           <Link to="/cart" className={classes.cart}>
             <BiCart size={24} />
-            <span>{basket.length}</span>
+            <span>
+              {basket.reduce((total, item) => total + (item.quantity || 1), 0)}
+            </span>
           </Link>
         </div>
       </section>
