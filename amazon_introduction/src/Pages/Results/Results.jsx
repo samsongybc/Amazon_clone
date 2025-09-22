@@ -18,7 +18,6 @@ const Results = () => {
       .get(`${productUrl}/category/${categoryName}`)
       .then((res) => {
         console.log(res);
-        console.log("Hello Console Ninja!");
         setResults(res.data);
       })
       .catch((err) => console.log(err))
