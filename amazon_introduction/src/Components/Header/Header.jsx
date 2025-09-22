@@ -6,9 +6,11 @@ import { FaSearch } from "react-icons/fa";
 import { BiCart } from "react-icons/bi";
 import Lower_header from "./Lower_header";
 import { DataContext } from "../DataProvider/DataProvider";
+import { auth } from "../../Utility/firebase";
+
 
 const Header = () => {
-  const [{ basket }, dispatch] = useContext(DataContext);
+  const [{user, basket }, dispatch] = useContext(DataContext);
   return (
     <section className={classes.fixed}>
       <section className={classes.header_container}>
@@ -54,9 +56,21 @@ const Header = () => {
             </select>
           </Link>
           {/* three components */}
-          <Link to="/auth">
-            <p>Sign In</p>
-            <span>Account & Lists</span>
+          <Link to={user ? "/" : "/auth"}>
+          <div>
+            {user ? (
+              <>
+                <p>Hello{user.email.split("@")[0]}</p>
+                <span onClick={() => auth.signOut()}>Sign Out</span>
+              </>)
+               : (<>
+              <p>Hello,Sign In</p>
+              <span>Account & Lists</span>
+              </>
+              )}
+          </div>
+           
+            
           </Link>
           {/* orders */}
 
