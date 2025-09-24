@@ -3,12 +3,13 @@ import LayOut from "../../Components/LayOut/LayOut";
 import { DataContext } from "../../Components/DataProvider/DataProvider";
 import CurrencyFormat from "../../Components/CurrencyFormat/CurrencyFormat";
 import { Type } from "../../Utility/action.type";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Rating from "@mui/material/Rating";
 import classes from "./Cart.module.css";
 
 const Cart = () => {
   const [{ basket }, dispatch] = useContext(DataContext);
+  const navigate = useNavigate();
   
   console.log("🛒 Cart loaded with items:", basket.length);
   console.log("📦 Cart items:", basket);
@@ -27,11 +28,14 @@ const Cart = () => {
     });
   };
 
-  const decrementItem = (id) => {
-    dispatch({
-      type: Type.DECREMENT_ITEM,
-      id: id,
-    });
+  const handleCheckout = () => {
+    if (basket.length === 0) {
+      alert("Your cart is empty! Add some items before proceeding to checkout.");
+      return;
+    }
+    
+    console.log("💳 Proceeding to checkout with items:", basket.length);
+    navigate("/payments");
   };
 
   return (
@@ -172,7 +176,10 @@ const Cart = () => {
                 )}
               />
             </div>
-            <button className={classes.checkout_button}>
+            <button 
+              className={classes.checkout_button}
+              onClick={handleCheckout}
+            >
               Proceed to Checkout
             </button>
           </div>

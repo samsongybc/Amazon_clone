@@ -15,11 +15,11 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState({signin: false, signup: false});
+  const [loading, setLoading] = useState({ signin: false, signup: false });
 
   const [{ user }, dispatch] = useContext(DataContext);
   const navigate = useNavigate();
-  
+
   // console.log(email, password);
 
   const authHandler = async (e) => {
@@ -28,16 +28,15 @@ const Auth = () => {
 
     // auth.signInWithEmailAndPassword(email, password)
     if (e.target.name == "signin") {
-      setLoading({...loading, signin: true});
+      setLoading({ ...loading, signin: true });
       // firebase auth
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          
           dispatch({
             type: Type.SET_USER,
             user: userCredential.user,
           });
-          setLoading({...loading, signin: false});
+          setLoading({ ...loading, signin: false });
           navigate("/");
         })
         .catch((error) => {
@@ -45,26 +44,23 @@ const Auth = () => {
           setError(error.message);
           navigate("/");
         });
-    } 
-    else if (e.target.name == "signup") {
-      setLoading({...loading, signup: true});
+    } else if (e.target.name == "signup") {
+      setLoading({ ...loading, signup: true });
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          
           dispatch({
             type: Type.SET_USER,
             user: userCredential.user,
           });
-          setLoading({...loading, signup: false});
+          setLoading({ ...loading, signup: false });
           navigate("/");
         })
         .catch((error) => {
           console.log(error);
           setError(error.message);
-          setLoading({...loading, signup: false});
+          setLoading({ ...loading, signup: false });
         });
-    }
-    else {
+    } else {
       setError("Please enter a valid email and password");
     }
   };
@@ -98,7 +94,7 @@ const Auth = () => {
           <button
             className={classes.login_signInButton}
             type="submit"
-            name="signIn"
+            name="signin"
             onClick={authHandler}
           >
             {loading.signin ? <ClipLoader color="#fff" size={20} /> : "Sign In"}
@@ -115,10 +111,15 @@ const Auth = () => {
           name="signup"
           onClick={authHandler}
         >
-          {loading.signup ? <ClipLoader color="#fff" size={20} /> : "Create your Amazon Account"}
-          
+          {loading.signup ? (
+            <ClipLoader color="#fff" size={20} />
+          ) : (
+            "Create your Amazon Account"
+          )}
         </button>
-        {error && (<small style={{padding: "10px", color: "red"}}>{error}</small>)}
+        {error && (
+          <small style={{ padding: "10px", color: "red" }}>{error}</small>
+        )}
       </div>
     </section>
   );
