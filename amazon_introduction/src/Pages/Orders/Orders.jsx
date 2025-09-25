@@ -13,23 +13,7 @@ const Orders = () => {
 
   useEffect(() => {
     if (user) {
-      db.collection("users")
-        .doc(user.uid)
-        .collection("orders")
-        .orderBy("created_at", "desc")
-        .get()
-        .onSnapshot((snapshot) => {
-          console.log(snapshot.docs.map((doc) => doc.data()));
-          setOrders(snapshot.docs.map((doc) => ({
-            id: doc.id,
-            data: doc.data(),
-          })));
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching orders:", error);
-          setLoading(false);
-        });
+      fetchOrders();
     } else {
       setOrders([]);
       setLoading(false);
@@ -88,7 +72,7 @@ const Orders = () => {
 
         {orders.length === 0 ? (
           <div className={classes.no_orders}>
-            <p>You haven't placed any orders yet.</p>
+            <p>You don't have any orders yet.</p>
           </div>
         ) : (
           <div className={classes.orders_list}>
@@ -116,18 +100,19 @@ const Orders = () => {
                 <div className={classes.order_items}>
                   <h4>Items Ordered:</h4>
                   <div className={classes.items_grid}>
-                      {eachOrder.items.map((item, index) => (
-                      <div key={index} className={classes.order_product}>
-                        <img src={item.image} alt={item.title} />
-                        <div className={classes.product_info}>
-                          <h5>{item.title}</h5>
-                          <p>Quantity: {item.quantity}</p>
-                          <p>
-                            Price: <CurrencyFormat amount={item.price} />
-                          </p>
+                    {eachOrder.items &&
+                      eachOrder.items.map((item, index) => (
+                        <div key={index} className={classes.order_product}>
+                          <img src={item.image} alt={item.title} />
+                          <div className={classes.product_info}>
+                            <h5>{item.title}</h5>
+                            <p>Quantity: {item.quantity}</p>
+                            <p>
+                              Price: <CurrencyFormat amount={item.price} />
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </div>
               </div>

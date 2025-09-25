@@ -24,7 +24,7 @@ const stripePromise = loadStripe(
 );
 
 // Payment Form Component (must be inside Elements provider)
-const PaymentForm = ({ totalAmount, onPaymentSuccess }) => {
+const PaymentForm = ({ totalAmount, onPaymentSuccess, dispatch }) => {
   const [cardError, setCardError] = useState(null);
   const [processing, setProcessing] = useState(false);
   const stripe = useStripe();
@@ -95,6 +95,12 @@ const PaymentForm = ({ totalAmount, onPaymentSuccess }) => {
 
         // Payment successful - process the order
         setProcessing(false);
+
+        // Empty the basket after successful payment
+        dispatch({
+          type: Type.EMPTY_BASKET,
+        });
+
         onPaymentSuccess();
       } else {
         setCardError(response.data.message || "Payment processing failed");
@@ -345,6 +351,7 @@ const Payments = () => {
             <PaymentForm
               totalAmount={totalAmount}
               onPaymentSuccess={handlePlaceOrder}
+              dispatch={dispatch}
             />
           </Elements>
         </div>
