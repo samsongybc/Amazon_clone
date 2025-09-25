@@ -1,19 +1,18 @@
-import React from 'react'
+import React from "react";
 
-import LayOut from '../../Components/LayOut/LayOut'
+import LayOut from "../../Components/LayOut/LayOut";
 import Carousel from "../../Components/Carousel/CarouselEffect";
 import Catagory from "../../Components/Catagory/Catagory";
 import Product from "../../Components/product/Product";
 
-
 const Landing = () => {
   return (
     <LayOut>
-      <Carousel/>
+      <Carousel />
       <Catagory />
       <Product />
     </LayOut>
   );
-}
+};
 
-export default Landing
+export default Landing;

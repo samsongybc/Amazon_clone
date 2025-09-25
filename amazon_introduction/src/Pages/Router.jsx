@@ -19,16 +19,15 @@ const Routing = () => {
     <Router>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/auth" element={<Auth/>} />
-        <Route path="/payments" element={
-
-
-          <Elements stripe={stripePromise}>
-            <Payment />
-          </Elements>
-
-
-           } />
+        <Route path="/auth" element={<Auth />} />
+        <Route
+          path="/payments"
+          element={
+            <Elements stripe={stripePromise}>
+              <Payment />
+            </Elements>
+          }
+        />
         <Route path="/orders" element={<Orders />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/category/:categoryName" element={<Results />} />

@@ -6,7 +6,12 @@ import CurrencyFormat from "../../Components/CurrencyFormat/CurrencyFormat";
 import { useNavigate } from "react-router-dom";
 import classes from "./Payments.module.css";
 import { Type } from "../../Utility/action.type";
+import axiosInstance from "../../API/axios";
 import { loadStripe } from "@stripe/stripe-js";
+import { db } from "../../Utility/firebase";
+import firebase from "firebase/compat/app";
+// import {ClipLoader} from "react-spinners";
+
 import {
   Elements,
   CardElement,
@@ -56,13 +61,50 @@ const PaymentForm = ({ totalAmount, onPaymentSuccess }) => {
         return;
       }
 
-      // Simulate successful payment
-      setTimeout(() => {
+      // Create payment intent using axios
+      const paymentData = {
+        amount: Math.round(totalAmount * 100), // Convert to cents
+        currency: "usd",
+        payment_method_id: paymentMethod.id,
+        description: `Payment for ${totalAmount} order`,
+      };
+
+      const response = await axiosInstance.post(
+        `/payments/create?total=${Math.round(totalAmount * 100)}`,
+        paymentData
+      );
+
+      if (response.data.clientSecret) {
+        const { clientSecret, status } = response.data;
+
+        if (status === "requires_action") {
+          // Handle 3D Secure or other authentication
+          const { error: confirmError } = await stripe.confirmCardPayment(
+            clientSecret
+          );
+
+          if (confirmError) {
+            setCardError(confirmError.message);
+            setProcessing(false);
+            return;
+          }
+        } else if (status === "succeeded") {
+          // Payment already succeeded
+          console.log("Payment succeeded!");
+        }
+
+        // Payment successful - process the order
         setProcessing(false);
         onPaymentSuccess();
-      }, 2000);
+      } else {
+        setCardError(response.data.message || "Payment processing failed");
+        setProcessing(false);
+      }
     } catch (error) {
-      setCardError("Payment failed. Please try again.");
+      console.error("Payment error:", error);
+      setCardError(
+        error.response?.data?.message || "Payment failed. Please try again."
+      );
       setProcessing(false);
     }
   };
@@ -178,7 +220,52 @@ const Payments = () => {
     }
 
     try {
-      alert(`Order placed successfully! Total: $${totalAmount.toFixed(2)}`);
+      // Create order data with timestamp
+      const orderTimestamp = new Date();
+      const orderId = `order_${user.uid}_${orderTimestamp.getTime()}`;
+
+      const orderData = {
+        orderId: orderId,
+        user_id: user.uid,
+        user_email: user.email,
+        items: basket.map((item) => ({
+          id: item.id,
+          title: item.title,
+          price: item.price,
+          quantity: item.quantity || 1,
+          image: item.image,
+        })),
+        total_amount: totalAmount,
+        order_date: orderTimestamp.toISOString(),
+        created_at: firebase.firestore.FieldValue.serverTimestamp(),
+        status: "completed",
+      };
+
+      // Save order to Firebase Firestore
+      await db
+        .collection("users")
+        .doc(user.uid)
+        .collection("orders")
+        .doc(orderId)
+        .set(orderData);
+
+      // Also save to a global orders collection for admin purposes
+      await db.collection("orders").doc(orderId).set(orderData);
+
+      console.log("Order saved to Firebase successfully");
+
+      // Optionally, also save to backend using axios (for additional processing)
+      try {
+        const response = await axiosInstance.post("/orders/create", orderData);
+        console.log("Order also saved to backend:", response.data);
+      } catch (axiosError) {
+        console.warn(
+          "Backend save failed, but Firebase save succeeded:",
+          axiosError
+        );
+      }
+
+      alert(`Order placed successfully! Order ID: ${orderId}`);
 
       // Clear the cart after successful order
       basket.forEach((item) => {
@@ -190,8 +277,8 @@ const Payments = () => {
 
       navigate("/orders");
     } catch (error) {
-      console.error("Payment failed:", error);
-      alert("Payment failed. Please try again.");
+      console.error("Order placement failed:", error);
+      alert("Failed to place order. Please try again.");
     }
   };
 

@@ -412,63 +412,20 @@
   margin: 0 auto;
 }
 
-/* Card Fields Container */
-.card_fields_container {
-  margin-bottom: 20px;
-}
-
-.card_field_label {
-  margin-bottom: 8px;
-}
-
-.card_field_label label {
-  display: block;
-  font-weight: bold;
-  color: #333;
-  font-size: 14px;
-}
-
 .card_input_container {
-  padding: 16px;
+  padding: 20px;
   border: 2px solid #ddd;
   border-radius: 8px;
   background-color: #fff;
-  min-height: 50px;
+  margin-bottom: 20px;
+  min-height: 60px;
   width: 100%;
   box-sizing: border-box;
-  position: relative;
 }
 
 .card_input_container:focus-within {
   border-color: #f0c14b;
   box-shadow: 0 0 5px rgba(240, 193, 75, 0.3);
-}
-
-/* Enhanced Stripe Element styling for better field separation */
-.card_input_container .StripeElement {
-  width: 100%;
-  padding: 8px 0;
-  font-size: 16px;
-  line-height: 1.4;
-  font-family: Arial, sans-serif;
-}
-
-.card_input_container .StripeElement--focus {
-  outline: none;
-}
-
-.card_input_container .StripeElement--invalid {
-  color: #9e2146;
-}
-
-.card_input_container .StripeElement--complete {
-  color: #4caf50;
-}
-
-.card_help_text {
-  margin-top: 5px;
-  color: #666;
-  font-size: 12px;
 }
 
 .card_error {
@@ -514,40 +471,4 @@
   background-color: #ccc;
   cursor: not-allowed;
   opacity: 0.7;
-}
-
-/* Responsive design for card input */
-@media (max-width: 768px) {
-  .payment_details {
-    padding: 15px;
-    max-width: 100%;
-  }
-
-  .card_input_container {
-    padding: 12px;
-    min-height: 45px;
-  }
-
-  .card_input_container .StripeElement {
-    font-size: 15px;
-    padding: 6px 0;
-  }
-
-  .card_field_label label {
-    font-size: 13px;
-  }
-
-  .card_help_text {
-    font-size: 11px;
-  }
-}
-
-/* Ensure proper spacing for Stripe Elements */
-.payment_card_container {
-  width: 100%;
-  overflow: hidden;
-}
-
-.payment_form {
-  width: 100%;
 }

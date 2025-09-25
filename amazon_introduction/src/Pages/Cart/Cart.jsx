@@ -180,7 +180,7 @@ const Cart = () => {
               className={classes.checkout_button}
               onClick={handleCheckout}
             >
-              Proceed to Checkout
+              Pay Now
             </button>
           </div>
         )}
