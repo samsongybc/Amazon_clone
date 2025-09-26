@@ -74,8 +74,9 @@ const PaymentForm = ({ totalAmount, onPaymentSuccess, dispatch }) => {
         paymentData
       );
 
-      if (response.data.clientSecret) {
-        const { clientSecret, status } = response.data;
+      // Handle direct PaymentIntent response from Firebase Functions
+      if (response.data.client_secret) {
+        const { client_secret: clientSecret, status } = response.data;
 
         if (status === "requires_action") {
           // Handle 3D Secure or other authentication
