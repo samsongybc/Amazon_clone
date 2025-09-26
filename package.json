@@ -1,5 +1,8 @@
 {
-  "dependencies": {
-    "react-spinners": "^0.17.0"
+  "name": "amazon-clone-root",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd Amazon_clone/amazon_introduction && npm install && npm run build",
+    "dev": "cd Amazon_clone/amazon_introduction && npm run dev"
   }
 }
